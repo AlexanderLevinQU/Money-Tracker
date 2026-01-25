@@ -1,0 +1,73 @@
+# Visual Studio / Rider / VS Code
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+.vscode/
+
+# Build outputs
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Publish / packaging outputs
+publish/
+publish/**
+*.zip
+*.7z
+
+# .NET
+*.nupkg
+*.snupkg
+project.lock.json
+packages/
+
+# MAUI / Xamarin
+Platforms/**/bin/
+Platforms/**/obj/
+*.xaml.g.cs
+
+# SQLite / Database files
+*.db
+*.sqlite
+moneytracker.db
+CMakeLists.txt
+
+# Logs
+*.log
+api.log
+api.err.log
+
+# Secrets and certificates
+secrets.json
+*.pfx
+*.p12
+*.key
+*.pem
+.env
+.env.*
+
+# Node / tools
+node_modules/
+npm-debug.log*
+
+# Misc
+*.cache
+*.DS_Store
+Thumbs.db
+
+# Project-specific files to ignore
+BUILD_SUMMARY.md
+PRD.md
+
+# Tools and editors
+.vscode/
+.idea/
+
+# Optional: keep the publish script out of commits if you want
+package_local.ps1
+
+# End of file
