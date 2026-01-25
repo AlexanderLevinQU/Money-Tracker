@@ -7,6 +7,7 @@
              NavigationPage.HasNavigationBar="False"
              BackgroundColor="#F5F5F5">
 
+    <ScrollView>
         <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*" Padding="20">
             <!-- Header -->
             <StackLayout Grid.Row="0" Spacing="15" Padding="0,0,0,15">
@@ -70,7 +71,7 @@
             </ContentView>
 
             <!-- Recent Transactions -->
-            <views:TransactionsList Grid.Row="3" />
-    </Grid>
-
+            <views:TransactionsList Grid.Row="3" HeightRequest="200"/>
+        </Grid> 
+    </ScrollView>
 </ContentPage>

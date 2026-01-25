@@ -28,27 +28,23 @@ public static class MauiProgram
 
 		var app = builder.Build();
 
-#if DEBUG
-		// In DEBUG, log the DB path and ensure DB exists so connection issues are easier to diagnose
+		// Always attempt to apply EF migrations on startup so new installs get the schema
 		try
 		{
 			var dbPath = Path.Combine(FileSystem.AppDataDirectory, "moneytracker.db");
-			// Print the DB path and whether the file exists so startup logs show exactly where we look
 			Logger.Log($"MoneyTracker DB path: {dbPath}");
 			Logger.Log($"MoneyTracker DB exists: {File.Exists(dbPath)}");
-
+			
 			using (var scope = app.Services.CreateScope())
 			{
 				var db = scope.ServiceProvider.GetRequiredService<MoneyTrackerContext>();
-				db.Database.EnsureCreated();
+				db.Database.Migrate();
 			}
 		}
 		catch (Exception ex)
 		{
-
 			Logger.LogException(ex, "Failed to ensure/create the SQLite database");
 		}
-#endif
 
 		return app;
 	}

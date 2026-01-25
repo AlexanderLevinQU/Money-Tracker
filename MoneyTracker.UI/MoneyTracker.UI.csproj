@@ -20,7 +20,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>MoneyTracker.UI</ApplicationTitle>
+		<ApplicationTitle>MoneyTracker</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.moneytracker.ui</ApplicationId>

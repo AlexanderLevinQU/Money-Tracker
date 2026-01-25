@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:MoneyTracker.UI.Converters"
              x:Class="MoneyTracker.UI.Views.AddTransactionPage"
-             Title="Add Transaction"
              BackgroundColor="#F5F5F5">
 
     <ContentPage.Resources>
@@ -11,130 +10,130 @@
             <converters:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBool" />
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            
+            <!-- Type Selection -->
+            <StackLayout Spacing="8">
+                <Label Text="Transaction Type" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="Income"
+                        Command="{Binding SelectTypeCommand}"
+                        CommandParameter="Income"
+                        BackgroundColor="#E0E0E0"
+                        TextColor="#333"
+                        CornerRadius="8"
+                        HorizontalOptions="FillAndExpand">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding SelectedType}" Value="Income">
+                                <Setter Property="BackgroundColor" Value="#4CAF50" />
+                                <Setter Property="TextColor" Value="White" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Text="Expense"
+                        Command="{Binding SelectTypeCommand}"
+                        CommandParameter="Expense"
+                        BackgroundColor="#E0E0E0"
+                        TextColor="#333"
+                        CornerRadius="8"
+                        HorizontalOptions="FillAndExpand">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding SelectedType}" Value="Expense">
+                                <Setter Property="BackgroundColor" Value="#F44336" />
+                                <Setter Property="TextColor" Value="White" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </HorizontalStackLayout>
+            </StackLayout>
 
-    <VerticalStackLayout Padding="20" Spacing="15">
-        
-        <!-- Type Selection -->
-        <StackLayout Spacing="8">
-            <Label Text="Transaction Type" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
-            <HorizontalStackLayout Spacing="10">
-                <Button Text="Income"
-                    Command="{Binding SelectTypeCommand}"
-                    CommandParameter="Income"
-                    BackgroundColor="#E0E0E0"
-                    TextColor="#333"
-                    CornerRadius="8"
-                    HorizontalOptions="FillAndExpand">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding SelectedType}" Value="Income">
-                            <Setter Property="BackgroundColor" Value="#4CAF50" />
-                            <Setter Property="TextColor" Value="White" />
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
-                <Button Text="Expense"
-                    Command="{Binding SelectTypeCommand}"
-                    CommandParameter="Expense"
-                    BackgroundColor="#E0E0E0"
-                    TextColor="#333"
-                    CornerRadius="8"
-                    HorizontalOptions="FillAndExpand">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding SelectedType}" Value="Expense">
-                            <Setter Property="BackgroundColor" Value="#F44336" />
-                            <Setter Property="TextColor" Value="White" />
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
-            </HorizontalStackLayout>
-        </StackLayout>
-
-        <!-- Amount -->
-        <StackLayout Spacing="8">
-            <Label Text="Amount" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
-                 <Entry Text="{Binding AmountText, Mode=TwoWay}"
-                     Placeholder="0.00"
-                     Keyboard="Numeric"
-                     BackgroundColor="White"
-                     TextColor="#333"
-                     PlaceholderColor="#999"/>
-        </StackLayout>
-
-        <!-- Category -->
-        <StackLayout Spacing="8">
-            <Label Text="Category" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
-            <HorizontalStackLayout Spacing="10">
-                <Picker ItemsSource="{Binding FilteredCategories}"
-                        ItemDisplayBinding="{Binding DisplayName}"
-                        SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-                        Title="Select Category"
+            <!-- Amount -->
+            <StackLayout Spacing="8">
+                <Label Text="Amount" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
+                    <Entry Text="{Binding AmountText, Mode=TwoWay}"
+                        Placeholder="0.00"
+                        Keyboard="Numeric"
                         BackgroundColor="White"
                         TextColor="#333"
-                        HorizontalOptions="FillAndExpand"/>
-                <Button Text="Add"
-                        Command="{Binding AddCategoryCommand}"
-                        BackgroundColor="#2196F3"
-                        TextColor="White"
-                        CornerRadius="8"
-                        FontSize="14"
-                        FontAttributes="Bold"
-                        Padding="8,0"
-                        WidthRequest="80"/>
-                <Button Text="Remove"
-                        Command="{Binding RemoveCategoryCommand}"
-                        BackgroundColor="#F44336"
-                        TextColor="White"
-                        CornerRadius="8"
-                        FontSize="14"
-                        FontAttributes="Bold"
-                        Padding="8,0"
-                        WidthRequest="80"/>
-            </HorizontalStackLayout>
-        </StackLayout>
+                        PlaceholderColor="#999"/>
+            </StackLayout>
 
-        <!-- Description -->
-        <StackLayout Spacing="8">
-            <Label Text="Description" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
-                 <Entry Text="{Binding Description, Mode=TwoWay}"
-                     Placeholder="Enter description (optional)"
-                     BackgroundColor="White"
-                     TextColor="#333"
-                     PlaceholderColor="#999"/>
-        </StackLayout>
+            <!-- Category -->
+            <StackLayout Spacing="8">
+                <Label Text="Category" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
+                <HorizontalStackLayout Spacing="10">
+                    <Picker ItemsSource="{Binding FilteredCategories}"
+                            ItemDisplayBinding="{Binding DisplayName}"
+                            SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                            Title="Select Category"
+                            BackgroundColor="White"
+                            TextColor="#333"
+                            HorizontalOptions="FillAndExpand"/>
+                    <Button Text="Add"
+                            Command="{Binding AddCategoryCommand}"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            CornerRadius="8"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            Padding="8,0"
+                            WidthRequest="80"/>
+                    <Button Text="Remove"
+                            Command="{Binding RemoveCategoryCommand}"
+                            BackgroundColor="#F44336"
+                            TextColor="White"
+                            CornerRadius="8"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            Padding="8,0"
+                            WidthRequest="80"/>
+                </HorizontalStackLayout>
+            </StackLayout>
 
-        <!-- Date -->
-        <StackLayout Spacing="8">
-            <Label Text="Date" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
-            <DatePicker Date="{Binding TransactionDate, Mode=TwoWay}"
+            <!-- Description -->
+            <StackLayout Spacing="8">
+                <Label Text="Description" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
+                    <Entry Text="{Binding Description, Mode=TwoWay}"
+                        Placeholder="Enter description (optional)"
                         BackgroundColor="White"
-                        TextColor="#333"/>
-        </StackLayout>
+                        TextColor="#333"
+                        PlaceholderColor="#999"/>
+            </StackLayout>
 
-        <!-- Status Message -->
-         <Label Text="{Binding StatusMessage}"
-             FontSize="12"
-             TextColor="#F44336"
-             IsVisible="{Binding StatusMessage, Converter={StaticResource StringNotEmptyToBool}}"/>
+            <!-- Date -->
+            <StackLayout Spacing="8">
+                <Label Text="Date" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
+                <DatePicker Date="{Binding TransactionDate, Mode=TwoWay}"
+                            BackgroundColor="White"
+                            TextColor="#333"/>
+            </StackLayout>
 
-        <!-- Save Button -->
-        <Button Text="Save Transaction"
-            Command="{Binding SaveTransactionCommand}"
-            BackgroundColor="#0D47A1"
-            TextColor="White"
-            CornerRadius="8"
-            FontSize="16"
-            FontAttributes="Bold"
-            Margin="0,20,0,0"/>
+            <!-- Status Message -->
+            <Label Text="{Binding StatusMessage}"
+                FontSize="12"
+                TextColor="#F44336"
+                IsVisible="{Binding StatusMessage, Converter={StaticResource StringNotEmptyToBool}}"/>
 
-        <!-- Cancel Button -->
-        <Button x:Name="CancelBtn"
-                Text="Back to Dashboard"
-                Clicked="OnCancelClicked"
-                BackgroundColor="#E0E0E0"
-                TextColor="#333"
+            <!-- Save Button -->
+            <Button Text="Save Transaction"
+                Command="{Binding SaveTransactionCommand}"
+                BackgroundColor="#0D47A1"
+                TextColor="White"
                 CornerRadius="8"
-                FontSize="16"/>
+                FontSize="16"
+                FontAttributes="Bold"
+                Margin="0,20,0,0"/>
 
-    </VerticalStackLayout>
+            <!-- Cancel Button -->
+            <Button x:Name="CancelBtn"
+                    Text="Back to Dashboard"
+                    Clicked="OnCancelClicked"
+                    BackgroundColor="#E0E0E0"
+                    TextColor="#333"
+                    CornerRadius="8"
+                    FontSize="16"/>
 
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
