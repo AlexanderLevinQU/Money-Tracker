@@ -70,4 +70,6 @@ PRD.md
 # Optional: keep the publish script out of commits if you want
 package_local.ps1
 
+.github/
+
 # End of file
