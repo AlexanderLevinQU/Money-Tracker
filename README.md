@@ -1,3 +1,3 @@
 Bookeeping app made to track your Income/Expenses.
 
-.Net MAUI frontend, ASP .NET rest api, SQLLite DB.
+.Net MAUI frontend, SQLLite DB
