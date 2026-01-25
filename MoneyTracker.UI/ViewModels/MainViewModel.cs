@@ -3,12 +3,16 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyTracker.Models;
 using MoneyTracker.UI.Services;
 using MoneyTracker.UI.Enums;
+using MoneyTracker.UI.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Maui.Storage;
+using System.IO;
 
 namespace MoneyTracker.UI.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    private readonly ApiService _apiService;
+    private readonly IApiService _apiService;
     private readonly IDialogService _dialogService;
 
     public DashboardViewModel Dashboard { get; }
@@ -35,23 +39,28 @@ public partial class MainViewModel : ObservableObject
 
     public MainViewModel(IDialogService? dialogService = null)
     {
-        _apiService = new ApiService();
-        _dialogService = dialogService ?? new DialogService();
-        Dashboard = new DashboardViewModel();
+        // create a local MoneyTrackerContext fallback if DI isn't available
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "moneytracker.db");
+        var options = new DbContextOptionsBuilder<MoneyTrackerContext>()
+            .UseSqlite($"Data Source={dbPath}")
+            .Options;
+        _apiService = new EfDataService(new MoneyTrackerContext(options));
+        _dialogService = new DialogService();
+        Dashboard = new DashboardViewModel(_apiService);
     }
 
     [RelayCommand]
     public async Task LoadProfiles()
     {
         IsLoading = true;
-        MoneyTracker.UI.Services.Logger.Log("LoadProfiles: Starting API call...");
+        Logger.Log("LoadProfiles: Starting API call...");
         try
         {
             // remember previous selection to avoid resetting when navigating back
             var previousSelectedId = SelectedProfile?.Id;
 
             Profiles = await _apiService.GetProfilesAsync();
-            MoneyTracker.UI.Services.Logger.Log($"LoadProfiles: API returned {Profiles.Count} profiles");
+            Logger.Log($"LoadProfiles: API returned {Profiles.Count} profiles");
             if (Profiles.Count > 0)
             {
                 if (previousSelectedId != null && Profiles.Any(p => p.Id == previousSelectedId.Value))
@@ -63,12 +72,12 @@ public partial class MainViewModel : ObservableObject
                     SelectedProfile = Profiles.FirstOrDefault(p => p.IsDefault) ?? Profiles[0];
                 }
                 StatusMessage = $"Loaded {Profiles.Count} profile(s)";
-                MoneyTracker.UI.Services.Logger.Log($"LoadProfiles: SelectedProfile set to {SelectedProfile?.Name}");
+                Logger.Log($"LoadProfiles: SelectedProfile set to {SelectedProfile?.Name}");
             }
             else
             {
                 StatusMessage = "No profiles found";
-                MoneyTracker.UI.Services.Logger.Log("LoadProfiles: No profiles returned from API");
+                Logger.Log("LoadProfiles: No profiles returned from API");
             }
         }
         catch (Exception ex)

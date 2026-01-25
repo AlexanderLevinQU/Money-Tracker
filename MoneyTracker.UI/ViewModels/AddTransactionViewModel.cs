@@ -3,12 +3,16 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyTracker.Models;
 // using MoneyTracker.UI.Enums; replaced by CategoryType from MoneyTracker.Models
 using MoneyTracker.UI.Services;
+using MoneyTracker.UI.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Maui.Storage;
+using System.IO;
 
 namespace MoneyTracker.UI.ViewModels;
 
 public partial class AddTransactionViewModel : ObservableObject
 {
-    private readonly ApiService _apiService;
+    private readonly IApiService _apiService;
 
     public IAsyncRelayCommand SaveTransactionCommand { get; }
 
@@ -54,11 +58,23 @@ public partial class AddTransactionViewModel : ObservableObject
     public IAsyncRelayCommand AddCategoryCommand { get; }
     public IAsyncRelayCommand RemoveCategoryCommand { get; }
 
-    private IDialogService _dialogService = new DialogService();
+    private IDialogService _dialogService;
 
-    public AddTransactionViewModel()
+    public AddTransactionViewModel(IApiService? apiService = null, IDialogService? dialogService = null)
     {
-        _apiService = new ApiService();
+        // fallback to local EF service if DI isn't available
+        if (apiService != null)
+            _apiService = apiService;
+        else
+        {
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "moneytracker.db");
+            var options = new DbContextOptionsBuilder<MoneyTrackerContext>()
+                .UseSqlite($"Data Source={dbPath}")
+                .Options;
+            _apiService = new EfDataService(new MoneyTrackerContext(options));
+        }
+
+        _dialogService = dialogService ?? new DialogService();
         SaveTransactionCommand = new AsyncRelayCommand(SaveTransaction);
         AddCategoryCommand = new AsyncRelayCommand(AddCategory);
         RemoveCategoryCommand = new AsyncRelayCommand(RemoveCategory);

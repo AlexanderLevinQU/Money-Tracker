@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls;
+using MoneyTracker.UI.Services.Interfaces;
 
 namespace MoneyTracker.UI.Services;
 

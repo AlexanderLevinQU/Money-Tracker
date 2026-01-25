@@ -1,11 +1,12 @@
 using MoneyTracker.Models;
 using MoneyTracker.UI.Models;
+using MoneyTracker.UI.Services.Interfaces;
 using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace MoneyTracker.UI.Services;
 
-public class ApiService
+public class ApiService : IApiService
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl = "http://localhost:5027/api";

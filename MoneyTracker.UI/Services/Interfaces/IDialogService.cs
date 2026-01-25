@@ -1,4 +1,4 @@
-namespace MoneyTracker.UI.Services;
+namespace MoneyTracker.UI.Services.Interfaces;
 
 public interface IDialogService
 {

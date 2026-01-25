@@ -20,7 +20,7 @@ public partial class App : Application
 		InitializeComponent();
 		// Create a single MainViewModel for the application so selected profile
 		// and dashboard state persist across navigation and page reloads.
-		var dialogService = new Services.DialogService();
+		var dialogService = new DialogService();
 		MainViewModel = new ViewModels.MainViewModel(dialogService);
 	}
 

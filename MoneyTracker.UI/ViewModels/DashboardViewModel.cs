@@ -2,19 +2,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyTracker.Models;
 using MoneyTracker.UI.Services;
+using MoneyTracker.UI.Services.Interfaces;
 using MoneyTracker.UI.Models;
 using MoneyTracker.UI.Enums;
 using System.Collections.ObjectModel;
-using MoneyTracker.UI.Enums;
 
 namespace MoneyTracker.UI.ViewModels;
 
 public partial class DashboardViewModel : ObservableObject
 {
-    private readonly ApiService _apiService;
-
-    [ObservableProperty]
-    private int selectedProfileId;
+    private readonly IApiService _apiService;
 
     // Backing storage for all loaded transactions (used for paging)
     private List<TransactionDto> _allTransactions = new();
@@ -22,6 +19,9 @@ public partial class DashboardViewModel : ObservableObject
     // Public collection exposed to the UI (paged)
     private readonly ObservableCollection<TransactionDto> _transactions = new();
     public ObservableCollection<TransactionDto> Transactions => _transactions;
+
+    // Options for the filter picker (bound from the view)
+    public List<string> FilterOptions { get; } = new List<string> { "All", "Expenses", "Income", "Category" };
 
     private int _pageSize = 3;
     private int _currentPage = 0;
@@ -32,6 +32,9 @@ public partial class DashboardViewModel : ObservableObject
         get => _hasMore;
         private set => SetProperty(ref _hasMore, value);
     }
+
+    [ObservableProperty]
+    private int selectedProfileId;
 
     [ObservableProperty]
     private decimal totalIncome;
@@ -63,9 +66,6 @@ public partial class DashboardViewModel : ObservableObject
     [ObservableProperty]
     private string filterCategory = string.Empty;
 
-    // Options for the filter picker (bound from the view)
-    public List<string> FilterOptions { get; } = new List<string> { "All", "Expenses", "Income", "Category" };
-
     [ObservableProperty]
     private string selectedFilter = "All";
 
@@ -84,15 +84,16 @@ public partial class DashboardViewModel : ObservableObject
     [ObservableProperty]
     private List<string> availableCategories = new();
 
-    public DashboardViewModel()
+    public DashboardViewModel() : this(new ApiService()) { }
+
+    public DashboardViewModel(IApiService apiService)
     {
-        _apiService = new ApiService();
+        _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
         // Listen for transaction saves and refresh dashboard/categories when they occur
         try
         {
             MessagingCenter.Subscribe<object, int>(this, "TransactionSaved", async (src, profileId) =>
             {
-                // if the saved transaction belongs to the currently selected profile, reload; else ignore
                 if (profileId == SelectedProfileId)
                 {
                     Logger.Log($"MessagingCenter: TransactionSaved -> LoadDashboard for profileId={profileId}");

@@ -1,5 +1,7 @@
 using MoneyTracker.UI.ViewModels;
 using MoneyTracker.Models;
+using MoneyTracker.UI.Services.Interfaces;
+using MoneyTracker.UI.Services;
 
 namespace MoneyTracker.UI.Views;
 
