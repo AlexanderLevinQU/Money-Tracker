@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Models;
+using System.Text.Json;
 
 namespace MoneyTracker.Api.Controllers;
 
@@ -16,12 +17,12 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+    public async Task<ActionResult<IEnumerable<Category>>> GetCategories(int profileId)
     {
         // Serialize manually to avoid TestServer PipeWriter compatibility issues
-        var list = await _context.Categories.ToListAsync();
-        var json = System.Text.Json.JsonSerializer.Serialize(list);
-        return Content(json, "application/json");
+        var categories = await _context.Categories.Where(c => c.ProfileId == profileId).ToListAsync(); // Lets us get all categories if no profileId is provided and user wants that option in the future
+        var categoriesJSON = JsonSerializer.Serialize(categories);
+        return Content(categoriesJSON, "application/json");
     }
 
     [HttpGet("{id}")]

@@ -59,10 +59,6 @@ npm-debug.log*
 *.DS_Store
 Thumbs.db
 
-# Project-specific files to ignore
-BUILD_SUMMARY.md
-PRD.md
-
 # Tools and editors
 .vscode/
 .idea/
@@ -71,5 +67,6 @@ PRD.md
 package_local.ps1
 
 .github/
-
+MoneyTracker-win-clean/
+Planning/
 # End of file
