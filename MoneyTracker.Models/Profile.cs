@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace MoneyTracker.Models;
 
@@ -6,6 +8,10 @@ public class Profile
 {
     [Key]
     public int Id { get; set; }
+
+    [ForeignKey("User")]
+    [Required]
+    public int UserId { get; set; } 
 
     [Required]
     [StringLength(100)]
@@ -18,7 +24,7 @@ public class Profile
 
     public bool IsDefault { get; set; } = false;
 
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public string DisplayName
     {
         get
@@ -45,4 +51,8 @@ public class Profile
     // Navigation properties
     public ICollection<Category> Categories { get; set; } = new List<Category>();
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
+    // Navigation to owning user
+    [JsonIgnore]
+    public User? User { get; set; }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 namespace MoneyTracker.Models;
 
@@ -6,6 +7,9 @@ public class Category
 {
     [Key]
     public int Id { get; set; }
+
+    [ForeignKey("Profile")] // TODO: Make non-nullable after migration/backfill
+    public int? ProfileId { get; set; }
 
     [Required]
     [StringLength(100)]
@@ -23,4 +27,8 @@ public class Category
 
     // Navigation properties
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
+    // Navigation to owning profile (nullable for migration/backfill)
+    [JsonIgnore]
+    public Profile? Profile { get; set; }
 }

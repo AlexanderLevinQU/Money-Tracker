@@ -6,6 +6,7 @@ public class MoneyTrackerContext : DbContext
 {
     public MoneyTrackerContext(DbContextOptions<MoneyTrackerContext> options) : base(options) { }
 
+    public DbSet<User> Users { get; set; }
     public DbSet<Profile> Profiles { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
@@ -14,13 +15,23 @@ public class MoneyTrackerContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Profile relationships
-        // Categories are now global, not tied to Profile
+        // User relationships
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Profiles)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Profile>()
             .HasMany(p => p.Transactions)
             .WithOne(t => t.Profile)
             .HasForeignKey(t => t.ProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Profile>()
+            .HasMany(p => p.Categories)
+            .WithOne(c => c.Profile)
+            .HasForeignKey(c => c.ProfileId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Category relationships

@@ -16,8 +16,14 @@ public class ProfilesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Profile>>> GetProfiles()
+    public async Task<ActionResult<IEnumerable<Profile>>> GetProfiles(int? userId)
     {
+        if (userId.HasValue)
+        {
+            return await _context.Profiles
+                .Where(p => p.UserId == userId.Value)
+                .ToListAsync();
+        }
         return await _context.Profiles.ToListAsync();
     }
 

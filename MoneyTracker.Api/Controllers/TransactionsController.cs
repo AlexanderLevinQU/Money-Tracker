@@ -8,6 +8,19 @@ namespace MoneyTracker.Api.Controllers;
 [Route("api/[controller]")]
 public class TransactionsController : ControllerBase
 {
+    public class TransactionDto
+    {
+        public int Id { get; set; }
+        public int ProfileId { get; set; }
+        public int CategoryId { get; set; }
+        public decimal Amount { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public CategoryType Type { get; set; } = CategoryType.Expense;
+        public string CategoryName { get; set; } = string.Empty;
+    }
+
+
     private readonly MoneyTrackerContext _context;
 
     public TransactionsController(MoneyTrackerContext context)
@@ -135,14 +148,3 @@ public class TransactionsController : ControllerBase
     }
 }
 
-public class TransactionDto
-{
-    public int Id { get; set; }
-    public int ProfileId { get; set; }
-    public int CategoryId { get; set; }
-    public decimal Amount { get; set; }
-    public string Description { get; set; } = string.Empty;
-    public DateTime Date { get; set; }
-    public CategoryType Type { get; set; } = CategoryType.Expense;
-    public string CategoryName { get; set; } = string.Empty;
-}
