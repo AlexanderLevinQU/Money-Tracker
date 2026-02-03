@@ -216,5 +216,20 @@ public class ApiService : IApiService
             return false;
         }
     }
+
+    public Task<User?> GetUserAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<User?> CreateUserAsync(User User)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteUserAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
 
