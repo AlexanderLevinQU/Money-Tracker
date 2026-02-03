@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Models;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyTracker.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "ApiScope")]
 public class CategoriesController : ControllerBase
 {
     private readonly MoneyTrackerContext _context;

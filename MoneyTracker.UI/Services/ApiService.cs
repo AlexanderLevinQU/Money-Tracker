@@ -23,20 +23,20 @@ public class ApiService : IApiService
     {
         try
         {
-            Services.Logger.Log($"GetProfilesAsync: Making request to {_baseUrl}/profiles");
+            Logger.Log($"GetProfilesAsync: Making request to {_baseUrl}/profiles");
             var response = await _httpClient.GetAsync($"{_baseUrl}/profiles");
-            Services.Logger.Log($"GetProfilesAsync: Response status: {response.StatusCode}");
+            Logger.Log($"GetProfilesAsync: Response status: {response.StatusCode}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            Services.Logger.Log($"GetProfilesAsync: Response JSON: {json}");
+            Logger.Log($"GetProfilesAsync: Response JSON: {json}");
             var result = JsonSerializer.Deserialize<List<Profile>>(json, _jsonOptions) ?? new();
-            Services.Logger.Log($"GetProfilesAsync: Deserialized {result.Count} profiles");
+            Logger.Log($"GetProfilesAsync: Deserialized {result.Count} profiles");
             return result;
         }
         catch (Exception ex)
         {
-            Services.Logger.Log($"GetProfilesAsync Error: {ex.Message}");
-            Services.Logger.LogException(ex, "GetProfilesAsync Exception");
+            Logger.Log($"GetProfilesAsync Error: {ex.Message}");
+            Logger.LogException(ex, "GetProfilesAsync Exception");
             return new();
         }
     }
@@ -49,7 +49,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error getting profile");
+            Logger.LogException(ex, "Error getting profile");
             return null;
         }
     }
@@ -65,7 +65,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error creating profile");
+            Logger.LogException(ex, "Error creating profile");
             return null;
         }
     }
@@ -82,7 +82,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error getting categories");
+            Logger.LogException(ex, "Error getting categories");
             return new();
         }
     }
@@ -98,7 +98,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error creating category");
+            Logger.LogException(ex, "Error creating category");
             return null;
         }
     }
@@ -113,7 +113,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error deleting category");
+            Logger.LogException(ex, "Error deleting category");
             return false;
         }
     }
@@ -130,7 +130,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error getting transactions");
+            Logger.LogException(ex, "Error getting transactions");
             return new();
         }
     }
@@ -143,7 +143,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error getting transaction");
+            Logger.LogException(ex, "Error getting transaction");
             return null;
         }
     }
@@ -152,7 +152,7 @@ public class ApiService : IApiService
     {
         try
         {
-            Services.Logger.Log($"Creating transaction via API: {transaction.Type} - ${transaction.Amount}");
+            Logger.Log($"Creating transaction via API: {transaction.Type} - ${transaction.Amount}");
                 // Post a DTO to the API to avoid sending navigation properties
                 var dto = new TransactionDto
                 {
@@ -167,22 +167,22 @@ public class ApiService : IApiService
                 var response = await _httpClient.PostAsJsonAsync($"{_baseUrl}/transactions", dto);
 
             var json = await response.Content.ReadAsStringAsync();
-            Services.Logger.Log($"API Response Status: {response.StatusCode}");
-            Services.Logger.Log($"API Response Body: {json}");
+            Logger.Log($"API Response Status: {response.StatusCode}");
+            Logger.Log($"API Response Body: {json}");
 
             if (!response.IsSuccessStatusCode)
             {
-                Services.Logger.Log($"API Error: {response.StatusCode} - {response.ReasonPhrase}");
+                Logger.Log($"API Error: {response.StatusCode} - {response.ReasonPhrase}");
                 return null;
             }
 
             var result = JsonSerializer.Deserialize<TransactionDto>(json, _jsonOptions);
-            Services.Logger.Log($"Deserialized result: Id={result?.Id}");
+            Logger.Log($"Deserialized result: Id={result?.Id}");
             return result;
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Exception in CreateTransactionAsync");
+            Logger.LogException(ex, "Exception in CreateTransactionAsync");
             return null;
         }
     }
@@ -197,7 +197,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error deleting transaction");
+            Logger.LogException(ex, "Error deleting transaction");
             return false;
         }
     }
@@ -212,7 +212,7 @@ public class ApiService : IApiService
         }
         catch (Exception ex)
         {
-            Services.Logger.LogException(ex, "Error deleting profile");
+            Logger.LogException(ex, "Error deleting profile");
             return false;
         }
     }

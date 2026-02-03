@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Models;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using MoneyTracker.Api.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +40,42 @@ var dbPath = Path.Combine(AppContext.BaseDirectory, "moneytracker.db");
 builder.Services.AddDbContext<MoneyTrackerContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
 
+// Auth: Microsoft Entra (Azure AD or B2C) - prefer AzureAd (single-tenant) with fallback to AzureAdB2C
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+var azureAd = builder.Configuration.GetSection("AzureAd");
+var authority = azureAd.GetValue<string>("Authority");
+var audience = azureAd.GetValue<string>("Audience");
+
+// Fallback to AzureAdB2C section if AzureAd is not provided
+if (string.IsNullOrEmpty(authority) && string.IsNullOrEmpty(audience))
+{
+    var b2c = builder.Configuration.GetSection("AzureAdB2C");
+    authority = b2c.GetValue<string>("Authority");
+    audience = b2c.GetValue<string>("Audience");
+}
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        if (!string.IsNullOrEmpty(authority)) options.Authority = authority;
+        if (!string.IsNullOrEmpty(audience)) options.Audience = audience;
+        options.RequireHttpsMetadata = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = !string.IsNullOrEmpty(authority),
+            ValidateAudience = !string.IsNullOrEmpty(audience)
+        };
+    });
+
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("ApiScope", policy => policy.RequireAssertion(ctx =>
+        ctx.User.HasClaim(c => (c.Type == "scp" || c.Type == "scope") && c.Value.Split(' ').Contains("access_as_user"))
+    ));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -49,6 +88,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 // Seed the database

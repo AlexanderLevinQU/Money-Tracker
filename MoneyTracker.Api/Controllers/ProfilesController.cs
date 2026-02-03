@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyTracker.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "ApiScope")]
 public class ProfilesController : ControllerBase
 {
     private readonly MoneyTrackerContext _context;
