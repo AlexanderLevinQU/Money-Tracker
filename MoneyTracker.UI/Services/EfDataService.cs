@@ -2,16 +2,22 @@ using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Models;
 using MoneyTracker.UI.Models;
 using MoneyTracker.UI.Services.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MoneyTracker.UI.Services;
 
-public class EfDataService : IApiService
+public class EfDataService : IApiService, IDisposable
 {
     private readonly MoneyTrackerContext _db;
 
     public EfDataService(MoneyTrackerContext db)
     {
         _db = db;
+    }
+
+    ~EfDataService()
+    {
+        Dispose();
     }
 
     // Profiles
@@ -124,9 +130,35 @@ public class EfDataService : IApiService
 
     public async Task<bool> DeleteTransactionAsync(int id)
     {
-        var t = await _db.Transactions.FindAsync(id);
-        if (t == null) return false;
-        _db.Transactions.Remove(t);
+        var transaction = await _db.Transactions.FindAsync(id);
+        if (transaction == null) return false;
+        _db.Transactions.Remove(transaction);
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
+    public void Dispose()
+    {
+        _db.Dispose();
+    }
+
+    public async Task<User?> GetUserAsync(int id)
+    {
+        return await _db.Users.FindAsync(id);
+    }
+
+    public async Task<User?> CreateUserAsync(User user)
+    {
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task<bool> DeleteUserAsync(int id)
+    {
+        var user = await _db.Users.FindAsync(id);
+        if (user == null) return false;
+        _db.Users.Remove(user);
         await _db.SaveChangesAsync();
         return true;
     }

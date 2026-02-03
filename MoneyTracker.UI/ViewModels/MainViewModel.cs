@@ -102,8 +102,10 @@ public partial class MainViewModel : ObservableObject
         IsLoading = true;
         try
         {
+            
             var newProfile = new Profile
             {
+                UserId = 0, //TODO: GET USER IF USING CLOUD, assuming single user with ID 1 for simplicity for now
                 Name = name,
                 Description = $"Profile created on {DateTime.Now:g}",
                 IsDefault = false,
