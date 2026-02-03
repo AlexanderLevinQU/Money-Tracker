@@ -1,7 +1,5 @@
 using MoneyTracker.Models;
 using MoneyTracker.UI.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MoneyTracker.UI.Services.Interfaces;
 
